@@ -18,13 +18,14 @@ bootstrap(
 
 \item{B}{Number of replications}
 
-\item{dist}{Specified distribution, allows for (non)-parametric estimation}
+\item{dist}{Specified distribution, allows for (non-)parametric estimation
+must be "NonParam", "Norm" or "Exp", default is "NonParam"}
 
-\item{param1}{Parameter of distribution in case of parametric estimation}
+\item{param1}{Parameter 1 of distribution in case of parametric estimation}
 
-\item{param2}{Parameter of distribution in case of parametric estimation}
+\item{param2}{Parameter 2 of distribution in case of parametric estimation}
 
-\item{conf_level}{Confidence levels for inference statistics}
+\item{conf_level}{Confidence levels for inference statistics, default is 0.95}
 }
 \value{
 An S3 object of class "bootstrap"
@@ -34,6 +35,7 @@ This function allows to user to create an S3 object which contains values
 based on the (non-)parametric bootstrapping estimated.
 }
 \examples{
+\donttest{
 set.seed(67)
 data <- rnorm(500)
 
@@ -48,5 +50,5 @@ plot(result)
 result_norm <- bootstrap(data, B = 1000, dist = "Norm",
                                         param1 = mean(data),
                                         param2 = sd(data))
-
+}
 }

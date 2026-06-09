@@ -93,16 +93,18 @@ validate_parameters <- function(dist, param1, param2) {
 #'
 #' @param X Original sample
 #' @param B Number of replications
-#' @param dist Specified distribution, allows for (non)-parametric estimation
-#' @param param1 Parameter of distribution in case of parametric estimation
-#' @param param2 Parameter of distribution in case of parametric estimation
-#' @param conf_level Confidence levels for inference statistics
+#' @param dist Specified distribution, allows for (non-)parametric estimation
+#' must be "NonParam", "Norm" or "Exp", default is "NonParam"
+#' @param param1 Parameter 1 of distribution in case of parametric estimation
+#' @param param2 Parameter 2 of distribution in case of parametric estimation
+#' @param conf_level Confidence levels for inference statistics, default is 0.95
 #'
 #' @importFrom
 #' stats quantile sd rnorm rexp
 #'
 #' @returns An S3 object of class "bootstrap"
 #' @examples
+#' \donttest{
 #' set.seed(67)
 #' data <- rnorm(500)
 #'
@@ -117,7 +119,7 @@ validate_parameters <- function(dist, param1, param2) {
 #' result_norm <- bootstrap(data, B = 1000, dist = "Norm",
 #'                                         param1 = mean(data),
 #'                                         param2 = sd(data))
-#'
+#'}
 
 #' @export
 bootstrap <- function(X, B, dist = "NonParam", param1 = NULL, param2 = NULL, conf_level = 0.95) {
