@@ -24,6 +24,7 @@ validate_cores <- function(cores, B) {
     warning("cores cannot exceed B. Setting cores = B", call. = FALSE)
     cores <- B
   }
+  return(cores)
 }
 #' Parallel Bootstrap with C++ Integration
 #'
@@ -60,19 +61,18 @@ validate_cores <- function(cores, B) {
 #' }
 #' @export
 bootstrap_par_cpp <- function(X, B, dist = "NonParam",
-                               param1 = NULL, param2 = NULL,
-                               conf_level = 0.95, cores = NULL) {
+                              param1 = NULL, param2 = NULL,
+                              conf_level = 0.95, cores = NULL) {
 
-  # Input validation (reuse existing validators)
+  # Input validation
   validate_X(X)
   validate_B(B)
   validate_conf_level(conf_level)
   validate_dist(dist)
   validate_parameters(dist, param1, param2)
-  validate_cores(cores, B)
+  cores <- validate_cores(cores, B)
 
-  # If cores = NULL this reduces to the standard C++ implementation
-
+  # If cores = NULL, fall back to serial
   if (is.null(cores)) {
     warning("cores = NULL. Falling back to serial bootstrap_cpp_integrated()", call. = FALSE)
     return(bootstrap_cpp_integrated(X, B, dist, param1, param2, conf_level))
@@ -86,6 +86,7 @@ bootstrap_par_cpp <- function(X, B, dist = "NonParam",
   }
 
   # Function to run a chunk of bootstrap replications using the C++ backend
+  # Note: X, dist, param1, param2 are taken from the closure
   run_chunk <- function(n_reps) {
     boot <- bootstrap_cpp(
       X, n_reps, dist,
@@ -106,30 +107,26 @@ bootstrap_par_cpp <- function(X, B, dist = "NonParam",
 
   # Export necessary objects to workers
   parallel::clusterExport(cl,
-                          varlist = c("run_chunk", "X", "dist", "param1", "param2", "reps_per_core",
-                                      "bootstrap_cpp"),
+                          varlist = c("run_chunk", "X", "dist", "param1", "param2", "reps_per_core"),
                           envir = environment()
   )
 
-  # Run chunks in parallel
+  # Run chunks in parallel – call run_chunk with only the number of replications
   results <- parallel::parLapply(cl, seq_len(cores), function(i) {
-    boot <- run_chunk(X, reps_per_core[i], dist,
-                      if (is.null(param1)) NA_real_ else param1,
-                      if (is.null(param2)) NA_real_ else param2)
-    list(means = boot$bootstrap_means, sds = boot$bootstrap_sds)
+    run_chunk(reps_per_core[i])   # Only pass n_reps
   })
 
   # Combine results
   all_means <- unlist(lapply(results, `[[`, "means"))
   all_sds   <- unlist(lapply(results, `[[`, "sds"))
 
-  # Ensure exact length (due to possible rounding)
+  # Ensure exact length
   if (length(all_means) != B) {
     all_means <- all_means[1:B]
     all_sds   <- all_sds[1:B]
   }
 
-  # Compute statistics (identical to bootstrap_cpp_integrated)
+  # Compute statistics
   estimate_mean    <- mean(all_means)
   estimate_sd      <- mean(all_sds)
   estimate_mean_se <- sd(all_means)

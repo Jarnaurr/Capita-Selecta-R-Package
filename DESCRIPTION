@@ -1,9 +1,12 @@
 Package: FinalProject
-Title: What the Package Does (One Line, Title Case)
+Title: Bootstrapping
 Version: 0.0.0.9000
 Authors@R: 
     person("Jarno", "Sprenkels", , "j.sprenkels@student.maastrichtuniversity.nl", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: This package implements several different versions of the bootstrap including;
+a regular R implementation, an integrated C++ version and a parallel computing version.
+These implementations fit different needs of bootstrapping depending on the amount of desired
+replications.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -12,6 +15,7 @@ LinkingTo:
     Rcpp
 Imports: 
     Rcpp,
+    parallel,
     stats
 Suggests: 
     testthat (>= 3.0.0)
