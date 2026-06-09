@@ -39,7 +39,8 @@ validate_cores <- function(cores, B) {
 #' @param param1 Parameter 1 (mean for Norm, rate for Exp)
 #' @param param2 Parameter 2 (sd for Norm, ignored for Exp)
 #' @param conf_level Confidence level for intervals (default 0.95)
-#' @param cores Number of CPU cores to use
+#' @param cores Number of CPU cores to use for parallel computing. Setting this as
+#' "NULL" will reduce this function to "bootstrap_cpp_integrated(...)."
 #'
 #' @return An S3 object of class "bootstrap" with same structure as
 #'         \code{bootstrap_cpp_integrated}
