@@ -28,3 +28,13 @@ Lastly, to easily view the results of the bootstrapping functions, users can use
 object made using "lm()". Additionally, they can use the "print()" function for the raw output. In addition to this, plotting histograms of the output is an
 important visual inspection of the bootstrapping result, therefore we also implemented a method to plot the distribution of estimated means and standard errors
 using "plot()".
+
+# How to install
+
+There are several ways to install an R package, here we consider a method using the "devtools" package
+
+run the following command 
+
+devtools::Install_github(Jarnaurr/Capita-Selecta-R-Package)
+
+Which should install the package.
