@@ -27,13 +27,13 @@ bootstrap_cpp <- function(X, B, dist, param1 = NA_real_, param2 = NA_real_) {
 #'
 #' # Non-parametric bootstrap
 #'
-#' result <- bootstrap_cpp_integrated(data, B = 1000, dist = "NonParam")
-#' print(result)
-#' summary(result)
-#' plot(result)
+#' result_cpp <- bootstrap_cpp_integrated(data, B = 1000, dist = "NonParam")
+#' print(result_cpp)
+#' summary(result_cpp)
+#' plot(result_cpp)
 #'
 #' # Normal parametric bootstrap with estimated parameters
-#' result_norm <- bootstrap_cpp_integrated(data, B = 1000, dist = "Norm",
+#' result_norm_cpp <- bootstrap_cpp_integrated(data, B = 1000, dist = "Norm",
 #'                                         param1 = mean(data),
 #'                                         param2 = sd(data))
 #'}

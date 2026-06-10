@@ -42,14 +42,11 @@ for better performance
 }
 \examples{
 \donttest{
-set.seed(123)
-x <- rnorm(100)
+set.seed(67)
+data <- rnorm(100)
 
 # Parallel bootstrap with 4 cores
-result_parallel <- bootstrap_parallel(x, B = 5000, cores = 4)
-print(result_parallel)
-
-# Compare with non-parallel version
-result_serial <- bootstrap_cpp_integrated(x, B = 5000)
+result_par_cpp <- bootstrap_par_cpp(data, B = 500, , dist = "NonParam", cores = 2)
+summary(result_par_cpp)
 }
 }
