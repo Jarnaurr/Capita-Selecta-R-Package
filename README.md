@@ -35,6 +35,6 @@ There are several ways to install an R package, here we consider a method using 
 
 run the following command 
 
-devtools::Install_github(Jarnaurr/Capita-Selecta-R-Package)
+devtools::install_github()(Jarnaurr/Capita-Selecta-R-Package)
 
 Which should install the package.
