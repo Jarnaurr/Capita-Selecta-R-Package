@@ -25,7 +25,7 @@ must be "NonParam", "Norm" or "Exp", default is "NonParam"}
 
 \item{param2}{Parameter 2 of distribution in case of parametric estimation}
 
-\item{conf_level}{Confidence levels for inference statistics, default is 0.95}
+\item{conf_level}{Confidence levels for inference statistics}
 }
 \value{
 An S3 object of class "bootstrap"
@@ -43,13 +43,13 @@ data <- rnorm(500)
 
 # Non-parametric bootstrap
 
-result <- bootstrap_cpp_integrated(data, B = 1000, dist = "NonParam")
-print(result)
-summary(result)
-plot(result)
+result_cpp <- bootstrap_cpp_integrated(data, B = 1000, dist = "NonParam")
+print(result_cpp)
+summary(result_cpp)
+plot(result_cpp)
 
 # Normal parametric bootstrap with estimated parameters
-result_norm <- bootstrap_cpp_integrated(data, B = 1000, dist = "Norm",
+result_norm_cpp <- bootstrap_cpp_integrated(data, B = 1000, dist = "Norm",
                                         param1 = mean(data),
                                         param2 = sd(data))
 }

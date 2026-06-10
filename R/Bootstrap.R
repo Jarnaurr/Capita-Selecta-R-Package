@@ -82,6 +82,9 @@ validate_parameters <- function(dist, param1, param2) {
     if (param1 <= 0) {
       stop("For Exp, param1 (rate) must be positive", call. = FALSE)
     }
+    if (!is.null(param2)){
+      warning("For Exp, param2 is unused")
+    }
   }
 
   return(TRUE)
@@ -97,7 +100,7 @@ validate_parameters <- function(dist, param1, param2) {
 #' must be "NonParam", "Norm" or "Exp", default is "NonParam"
 #' @param param1 Parameter 1 of distribution in case of parametric estimation
 #' @param param2 Parameter 2 of distribution in case of parametric estimation
-#' @param conf_level Confidence levels for inference statistics, default is 0.95
+#' @param conf_level Confidence levels for inference statistics
 #'
 #' @importFrom
 #' stats quantile sd rnorm rexp
@@ -116,15 +119,17 @@ validate_parameters <- function(dist, param1, param2) {
 #' plot(result)
 #'
 #' # Normal parametric bootstrap with estimated parameters
+#'
 #' result_norm <- bootstrap(data, B = 1000, dist = "Norm",
 #'                                         param1 = mean(data),
 #'                                         param2 = sd(data))
+#'summary(result_norm)
 #'}
 
 #' @export
 bootstrap <- function(X, B, dist = "NonParam", param1 = NULL, param2 = NULL, conf_level = 0.95) {
 
-  # Run all validations
+  # Run validator functions to verify input
   validate_X(X)
   validate_B(B)
   validate_conf_level(conf_level)
@@ -162,8 +167,7 @@ bootstrap <- function(X, B, dist = "NonParam", param1 = NULL, param2 = NULL, con
   estimate_mean <- mean(bootstrap_means)
   estimate_sd <- mean(bootstrap_sds)
 
-  #Also Compute the Standard errors for the above for the purpose of
-  #statistical inference
+  #Compute SE
   estimate_mean_se <- sd(bootstrap_means)
   estimate_sd_se <- sd(bootstrap_sds)
 

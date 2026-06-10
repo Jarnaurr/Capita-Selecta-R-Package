@@ -25,7 +25,7 @@ must be "NonParam", "Norm" or "Exp", default is "NonParam"}
 
 \item{param2}{Parameter 2 of distribution in case of parametric estimation}
 
-\item{conf_level}{Confidence levels for inference statistics, default is 0.95}
+\item{conf_level}{Confidence levels for inference statistics}
 }
 \value{
 An S3 object of class "bootstrap"
@@ -47,8 +47,10 @@ summary(result)
 plot(result)
 
 # Normal parametric bootstrap with estimated parameters
+
 result_norm <- bootstrap(data, B = 1000, dist = "Norm",
                                         param1 = mean(data),
                                         param2 = sd(data))
+summary(result_norm)
 }
 }

@@ -54,6 +54,7 @@ validate_cores <- function(cores, B) {
 #' data <- rnorm(100)
 #'
 #' # Parallel bootstrap with 2 cores
+#'
 #' result_par_cpp <- bootstrap_par_cpp(data, B = 500, dist = "NonParam", cores = 2)
 #' summary(result_par_cpp)
 #' }
@@ -62,7 +63,7 @@ bootstrap_par_cpp <- function(X, B, dist = "NonParam",
                               param1 = NULL, param2 = NULL,
                               conf_level = 0.95, cores = NULL) {
 
-  # Input validation
+  # Run validator functions to verify input
   validate_X(X)
   validate_B(B)
   validate_conf_level(conf_level)
@@ -70,44 +71,44 @@ bootstrap_par_cpp <- function(X, B, dist = "NonParam",
   validate_parameters(dist, param1, param2)
   cores <- validate_cores(cores, B)
 
-  # If cores = NULL, fall back to serial
+  # If cores = NULL, problem is same as regular C++ implemented problem
   if (is.null(cores)) {
     warning("cores = NULL. Returns same as bootstrap_cpp_integrated()", call. = FALSE)
     return(bootstrap_cpp_integrated(X, B, dist, param1, param2, conf_level))
   }
 
-  # Split B into chunks (one per core)
+  # Split number of replications into several equally sized "chunks" for each core
   reps_per_core <- rep(floor(B / cores), cores)
   remainder <- B - sum(reps_per_core)
   if (remainder > 0) {
     reps_per_core[1:remainder] <- reps_per_core[1:remainder] + 1
   }
 
-  # Pre‑compute parameter values (NA if NULL)
+  # Translate values to C++ if necessary
   p1 <- if (is.null(param1)) NA_real_ else param1
   p2 <- if (is.null(param2)) NA_real_ else param2
 
-  # Function to run a chunk using .Call directly (no R wrapper needed)
+  # Use .Call to call surpressed C++ function for a chunk per core
   run_chunk <- function(n_reps, X, dist, p1, p2) {
     .Call(`_FinalProject_bootstrap_cpp`, X, as.integer(n_reps), dist, p1, p2)
   }
 
-  # Set up parallel cluster
+  # Set up parallel cluster and have this exit on completion of the function
   cl <- parallel::makeCluster(cores, type = "PSOCK")
   on.exit(parallel::stopCluster(cl), add = TRUE)
 
-  # Load the package namespace on each worker (makes the C++ symbol available)
+  # Load the package for each core since they cannot access the previous environment
   parallel::clusterEvalQ(cl, {
     library(FinalProject, quietly = TRUE)
   })
 
-  # Export required objects to workers
+  # Export required objects to the cores
   parallel::clusterExport(cl,
                           varlist = c("run_chunk", "X", "dist", "p1", "p2", "reps_per_core"),
                           envir = environment()
   )
 
-  # Run chunks in parallel – call run_chunk with all arguments
+  # Run chunks in parallel
   results <- parallel::parLapply(cl, seq_len(cores), function(i) {
     boot <- run_chunk(reps_per_core[i], X, dist, p1, p2)
     list(means = boot$bootstrap_means, sds = boot$bootstrap_sds)
@@ -123,7 +124,8 @@ bootstrap_par_cpp <- function(X, B, dist = "NonParam",
     all_sds   <- all_sds[1:B]
   }
 
-  # Compute statistics
+  # Compute statistics. This can be done in R since it's quick work and
+  # ensures consistency with predefined objects and methods
   estimate_mean    <- mean(all_means)
   estimate_sd      <- mean(all_sds)
   estimate_mean_se <- sd(all_means)

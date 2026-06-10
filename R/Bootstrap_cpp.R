@@ -15,7 +15,7 @@ bootstrap_cpp <- function(X, B, dist, param1 = NA_real_, param2 = NA_real_) {
 #' must be "NonParam", "Norm" or "Exp", default is "NonParam"
 #' @param param1 Parameter 1 of distribution in case of parametric estimation
 #' @param param2 Parameter 2 of distribution in case of parametric estimation
-#' @param conf_level Confidence levels for inference statistics, default is 0.95
+#' @param conf_level Confidence levels for inference statistics
 #'
 #' @importFrom stats quantile sd
 #'
@@ -40,7 +40,7 @@ bootstrap_cpp <- function(X, B, dist, param1 = NA_real_, param2 = NA_real_) {
 #' @export
 bootstrap_cpp_integrated <- function(X, B, dist = "NonParam", param1 = NULL, param2 = NULL, conf_level = 0.95) {
 
-  # Run all validations
+  # Run validators to verify input
   validate_X(X)
   validate_B(B)
   validate_conf_level(conf_level)
@@ -66,6 +66,7 @@ bootstrap_cpp_integrated <- function(X, B, dist = "NonParam", param1 = NULL, par
   ci_mean <- quantile(bootstrap_means, probs = c(alpha/2, 1 - alpha/2))
   ci_sd   <- quantile(bootstrap_sds,   probs = c(alpha/2, 1 - alpha/2))
 
+  #Returns a neat S3 object to run predefined methods on
   result <- list(
     bootstrap_means    = bootstrap_means,
     bootstrap_sds      = bootstrap_sds,

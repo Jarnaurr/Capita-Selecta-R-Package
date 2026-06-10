@@ -45,8 +45,9 @@ for better performance
 set.seed(67)
 data <- rnorm(100)
 
-# Parallel bootstrap with 4 cores
-result_par_cpp <- bootstrap_par_cpp(data, B = 500, , dist = "NonParam", cores = 2)
+# Parallel bootstrap with 2 cores
+
+result_par_cpp <- bootstrap_par_cpp(data, B = 500, dist = "NonParam", cores = 2)
 summary(result_par_cpp)
 }
 }

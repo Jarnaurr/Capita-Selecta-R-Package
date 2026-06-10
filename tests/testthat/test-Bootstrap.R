@@ -23,3 +23,44 @@ test_that("Non-parametric Bootstrap sd result consistency", {
   expect_equal(mean(obj1$bootstrap_sds), mean(obj2$bootstrap_sds), tolerance = 0.01)
   expect_equal(mean(obj1$bootstrap_sds), mean(obj3$bootstrap_sds), tolerance = 0.01)
 })
+
+test_that("Functions validate inputs properly", {
+  X <- rnorm(100)
+  expect_error(bootstrap(X, B = 100, dist = "InvalidDist"))
+  expect_error(bootstrap(X, B = 100, dist = 21))
+  expect_error(bootstrap(X, B = -10, dist = "NonParam"))
+  expect_error(bootstrap(c("a", "b", "c"), B = 100, dist = "NonParam"))
+  X_na <- c(NA, X)
+  expect_error(bootstrap(X_na, B = 100, dist = "NonParam"))
+  expect_error(bootstrap(X, B = 0, dist = "NonParam"))
+  expect_error(bootstrap(X, B = 10.33, dist = "NonParam"))
+  expect_error(bootstrap(X, B = "meow", dist = "NonParam"))
+  X_data_frame <- data.frame(
+    col1 = rnorm(100),
+    col2 = rnorm(100))
+  X_less_than_one <- 3
+  expect_error(bootstrap(X_less_than_one, B = 100, dist = "NonParam"))
+  expect_error(bootstrap(X_data_frame, B = 100, dist = "NonParam"))
+  expect_error(bootstrap(X, B = 100, dist = "NonParam", conf_level = 0))
+  expect_error(bootstrap(X, B = 100, dist = "NonParam", conf_level = 2))
+  expect_error(bootstrap(X, B = 100, dist = "NonParam", conf_level = -1))
+  expect_error(bootstrap(X, B = 100, dist = "NonParam", conf_level = "meow"))
+  expect_error(bootstrap(X, B = 100, dist = "Norm", conf_level = 0.95, param1 = mean(X)))
+  expect_error(bootstrap(X, B = 100, dist = "Norm", conf_level = 0.95, param2 = sd(X)))
+  expect_error(bootstrap(X, B = 100, dist = "Norm", conf_level = 0.95))
+  expect_error(bootstrap(X, B = 100, dist = "Exp", conf_level = 0.95))
+  expect_warning(bootstrap(X, B = 100, dist = "Exp", param1 = 1/2, param2 = 1/2, conf_level = 0.95))
+  expect_error(bootstrap(X, B = 100, dist = "Norm", conf_level = 0.95, param1 = mean(X), param2 = "meow"))
+  expect_error(bootstrap(X, B = 100, dist = "Norm", conf_level = 0.95, param1 = "meow", param2 = sd(X)))
+})
+
+
+test_that("C++ parallel computing specific errors", {
+  X <- rnorm(100)
+  expect_error(bootstrap_par_cpp(X, B = 1000, dist = "NonParam", cores = "meow"))
+  expect_error(bootstrap_par_cpp(X, B = 1000, dist = "NonParam", cores = 2.1))
+  expect_error(bootstrap_par_cpp(X, B = 1000, dist = "NonParam", cores = c(2,2)))
+  expect_error(bootstrap_par_cpp(X, B = 1000, dist = "NonParam", cores = 0))
+  expect_error(bootstrap_par_cpp(X, B = 1000, dist = "NonParam", cores = -1))
+  expect_warning(bootstrap_par_cpp(X, B = 3, dist = "NonParam", cores = 4))
+})
