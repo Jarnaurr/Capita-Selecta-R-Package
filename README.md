@@ -35,6 +35,12 @@ There are several ways to install an R package, here we consider a method using 
 
 run the following command 
 
-pak::pak(Jarnaurr/Capita-Selecta-R-Package)
+pak::pak("Jarnaurr/Capita-Selecta-R-Package")
 
 Which should install the package.
+
+If Rtools is not installed at your device it will return an error, simply run the command:
+
+pkgbuild::check_build_tools(debug = TRUE)
+
+Which will prompt you to install Rtools after which you can again run the previous command to install this R package from github.
