@@ -4,9 +4,9 @@
 \name{FinalProject-package}
 \alias{FinalProject}
 \alias{FinalProject-package}
-\title{FinalProject: What the Package Does (One Line, Title Case)}
+\title{FinalProject: Bootstrapping}
 \description{
-What the package does (one paragraph).
+This package implements several different versions of the bootstrap including; a regular R implementation, an integrated C++ version and a parallel computing version. These implementations fit different needs of bootstrapping depending on the amount of desired replications.
 }
 \author{
 \strong{Maintainer}: Jarno Sprenkels \email{j.sprenkels@student.maastrichtuniversity.nl}

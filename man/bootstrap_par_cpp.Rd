@@ -27,7 +27,8 @@ bootstrap_par_cpp(
 
 \item{conf_level}{Confidence level for intervals (default 0.95)}
 
-\item{cores}{Number of CPU cores to use}
+\item{cores}{Number of CPU cores to use for parallel computing. Setting this as
+"NULL" will reduce this function to "bootstrap_cpp_integrated(...)."}
 }
 \value{
 An S3 object of class "bootstrap" with same structure as
