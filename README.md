@@ -24,7 +24,7 @@ function in R to allign this with what users are already familiar with.
 In addition to this we add some validator functions to check that the variables the users inserts in the function are valid, and return appropriate errors if this
 is not the case.
 
-Lastly, to easily view the results of the bootstrapping functions, users can use the familiar "summarise()" functions to review the output, much like they can for an
+Lastly, to easily view the results of the bootstrapping functions, users can use the familiar "summary()" functions to review the output, much like they can for an
 object made using "lm()". Additionally, they can use the "print()" function for the raw output. In addition to this, plotting histograms of the output is an
 important visual inspection of the bootstrapping result, therefore we also implemented a method to plot the distribution of estimated means and standard errors
 using "plot()".
